@@ -70,49 +70,11 @@ class F670L:
         ssid_menu = self.driver.find_element(By.ID, "WLANSSIDConf")
         ssid_menu.click()
         # get essid & passphrase
+        wifi2ghz = {}
         for i in range(4):
-            wifi2ghz = self.get_ssid_security(f"ESSID:{i}", f"EncryptionType:{i}", f"KeyPassphrase:{i}")
-            print(wifi2ghz["essid"], wifi2ghz["passphrase"])
-        # ssid2ghz1
-        auth_type = self.driver.find_element(By.ID, "EncryptionType:0")
-        auth_type_value = auth_type.get_attribute("value")
-        ssid2ghz1_field = self.driver.find_element(By.ID, "ESSID:0")
-        ssid2ghz1_text = ssid2ghz1_field.get_attribute("value")
-        if auth_type_value != "No Security":
-            password2ghz1_field = self.driver.find_element(By.ID, "KeyPassphrase:0")
-            password2ghz1_text = password2ghz1_field.get_attribute("value")
-        else:
-            password2ghz1_text = ""
-        # ssid2ghz2
-        auth_type = self.driver.find_element(By.ID, "EncryptionType:1")
-        auth_type_value = auth_type.get_attribute("value")
-        ssid2ghz2_field = self.driver.find_element(By.ID, "ESSID:1")
-        ssid2ghz2_text = ssid2ghz2_field.get_attribute("value")
-        if auth_type_value != "No Security":
-            password2ghz2_field = self.driver.find_element(By.ID, "KeyPassphrase:1")
-            password2ghz2_text = password2ghz2_field.get_attribute("value")
-        else:
-            password2ghz2_text = ""
-        # ssid2ghz3
-        auth_type = self.driver.find_element(By.ID, "EncryptionType:2")
-        auth_type_value = auth_type.get_attribute("value")
-        ssid2ghz3_field = self.driver.find_element(By.ID, "ESSID:2")
-        ssid2ghz3_text = ssid2ghz3_field.get_attribute("value")
-        if auth_type_value != "No Security":
-            password2ghz3_field = self.driver.find_element(By.ID, "KeyPassphrase:2")
-            password2ghz3_text = password2ghz3_field.get_attribute("value")
-        else:
-            password2ghz3_text = ""
-        # ssid2ghz4
-        auth_type = self.driver.find_element(By.ID, "EncryptionType:3")
-        auth_type_value = auth_type.get_attribute("value")
-        ssid2ghz4_field = self.driver.find_element(By.ID, "ESSID:3")
-        ssid2ghz4_text = ssid2ghz4_field.get_attribute("value")
-        if auth_type_value != "No Security":
-            password2ghz4_field = self.driver.find_element(By.ID, "KeyPassphrase:3")
-            password2ghz4_text = password2ghz4_field.get_attribute("value")
-        else:
-            password2ghz4_text = ""
+            wifi2ghz_data = self.get_ssid_security(f"ESSID:{i}", f"EncryptionType:{i}", f"KeyPassphrase:{i}")
+            wifi2ghz[f"ssid{i}Name"] = wifi2ghz_data["essid"]
+            wifi2ghz[f"ssid{i}Password"] = wifi2ghz_data["passphrase"]
         # ssid5ghz1
         auth_type = self.driver.find_element(By.ID, "EncryptionType:4")
         auth_type_value = auth_type.get_attribute("value")
@@ -156,16 +118,7 @@ class F670L:
         data = {
             "ipRouter": self.ip_router,
             "routerName": self.router_name,
-            "wifi2ghz": {
-                "ssid1Name": ssid2ghz1_text,
-                "ssid1Password": password2ghz1_text,
-                "ssid2Name": ssid2ghz2_text,
-                "ssid1Password": password2ghz2_text,
-                "ssid3Name": ssid2ghz3_text,
-                "ssid3Password": password2ghz3_text,
-                "ssid4Name": ssid2ghz4_text,
-                "ssid4Password": password2ghz4_text,
-            },
+            "wifi2ghz": wifi2ghz,
             "wifi5ghz": {
                 "ssid1Name": ssid5ghz1_text,
                 "ssid1Password": password5ghz1_text,
