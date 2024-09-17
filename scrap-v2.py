@@ -114,7 +114,7 @@ class F609:
         login_button = self.driver.find_element(By.ID, "LoginId")
         login_button.click()
 
-    def get_ssid(self, ssid_option_id, ssid_dropdown_value, ssid_input_id):
+    def get_essid(self, ssid_option_id, ssid_dropdown_value, ssid_input_id):
         ssid_select = self.driver.find_element(By.ID, ssid_option_id)
         ssid_dropdown = Select(ssid_select)
         ssid_dropdown.select_by_value(ssid_dropdown_value)
@@ -123,6 +123,20 @@ class F609:
         ssid_input_field = self.driver.find_element(By.ID, ssid_input_id)
         ssid_input_value = ssid_input_field.get_attribute("value")
         return ssid_input_value
+
+    def get_security(self, ssid_option_id, ssid_dropdown_value, encryption_type_id):
+        ssid_select = driver.find_element(By.ID, ssid_option_id)
+        ssid_dropdown = Select(ssid_select)
+        ssid_dropdown.select_by_value(ssid_dropdown_value)
+        encryption_type_option = self.driver.find_element(By.ID, encryption_type_id)
+        encryption_type_value = encryption_type_option.get_attribute("value")
+        passphrase_value = ""
+        if encryption_type_value != "Open System":
+            password_present = EC.presence_of_element_located((By.ID, encryption_type_id))
+            WebDriverWait(self.driver, 10).until(password_present)
+            passphrase_field = self.driver.find_element(By.ID, encryption_type_id)
+            passphrase_value = passphrase_field.get_attribute("value")
+        return passphrase_value
 
     def get_wifi_info(self):
         # switch to main frame
@@ -140,110 +154,37 @@ class F609:
         wlan_menu = self.driver.find_element(By.ID, "smWLAN")
         wlan_menu.click()
 
-        # ssid name
+        wifi2ghz = {}
+        # get essid
         # click ssid menu
         ssid_present = EC.presence_of_element_located((By.ID, "ssmWLANMul"))
         WebDriverWait(self.driver, 10).until(ssid_present)
         ssid_menu = self.driver.find_element(By.ID, "ssmWLANMul")
         ssid_menu.click()
-        # ssid1
-        ssid_present = EC.presence_of_element_located((By.ID, "Frm_ESSID"))
-        WebDriverWait(self.driver, 10).until(ssid_present)
-        ssid1_field = self.driver.find_element(By.ID, "Frm_ESSID")
-        ssid1_text = ssid1_field.get_attribute("value")
-        # ssid2
-        ssid_select = driver.find_element(By.ID, 'Frm_SSID_SET')
-        ssid_dropdown = Select(ssid_select)
-        ssid_dropdown.select_by_value("IGD.LD1.WLAN2")
-        ssid_present = EC.presence_of_element_located((By.ID, "Frm_ESSID"))
-        WebDriverWait(self.driver, 10).until(ssid_present)
-        ssid2_field = self.driver.find_element(By.ID, "Frm_ESSID")
-        ssid2_text = ssid2_field.get_attribute("value")
-        # ssid3
-        ssid_select = driver.find_element(By.ID, 'Frm_SSID_SET')
-        ssid_dropdown = Select(ssid_select)
-        ssid_dropdown.select_by_value("IGD.LD1.WLAN3")
-        ssid_present = EC.presence_of_element_located((By.ID, "Frm_ESSID"))
-        WebDriverWait(self.driver, 10).until(ssid_present)
-        ssid3_field = self.driver.find_element(By.ID, "Frm_ESSID")
-        ssid3_text = ssid3_field.get_attribute("value")
-        # ssid4
-        ssid_select = driver.find_element(By.ID, 'Frm_SSID_SET')
-        ssid_dropdown = Select(ssid_select)
-        ssid_dropdown.select_by_value("IGD.LD1.WLAN4")
-        ssid_present = EC.presence_of_element_located((By.ID, "Frm_ESSID"))
-        WebDriverWait(self.driver, 10).until(ssid_present)
-        ssid4_field = self.driver.find_element(By.ID, "Frm_ESSID")
-        ssid4_text = ssid4_field.get_attribute("value")
-
-        # ssid security
+        for i in range(4):
+            wifi2ghz[f"ssid{i+1}Name"] = self.get_essid("Frm_SSID_SET", f"IGD.LD1.WLAN{i+1}", "Frm_ESSID")
+        # get passphrase
         # click security menu
         security_present = EC.presence_of_element_located((By.ID, "ssmWLANSec"))
         WebDriverWait(self.driver, 10).until(security_present)
         security_menu = self.driver.find_element(By.ID, "ssmWLANSec")
         security_menu.click()
-        # ssid1
-        auth_type = self.driver.find_element(By.ID, "Frm_Authentication")
-        auth_type_value = auth_type.get_attribute("value")
-        if auth_type_value != "Open System":
-            password_present = EC.presence_of_element_located((By.ID, "Frm_KeyPassphrase"))
-            WebDriverWait(self.driver, 10).until(password_present)
-            password1_field = self.driver.find_element(By.ID, "Frm_KeyPassphrase")
-            password1_text = password1_field.get_attribute("value")
-        else:
-            password1_text = ""
-        # ssid2
-        ssid_select = driver.find_element(By.ID, 'Frm_SSID_SET')
-        ssid_dropdown = Select(ssid_select)
-        ssid_dropdown.select_by_value("IGD.LD1.WLAN2")
-        auth_type = self.driver.find_element(By.ID, "Frm_Authentication")
-        auth_type_value = auth_type.get_attribute("value")
-        if auth_type_value != "Open System":
-            password_present = EC.presence_of_element_located((By.ID, "Frm_KeyPassphrase"))
-            WebDriverWait(self.driver, 10).until(password_present)
-            password2_field = self.driver.find_element(By.ID, "Frm_KeyPassphrase")
-            password2_text = password2_field.get_attribute("value")
-        else:
-            password2_text = ""
-        # ssid3
-        ssid_select = driver.find_element(By.ID, 'Frm_SSID_SET')
-        ssid_dropdown = Select(ssid_select)
-        ssid_dropdown.select_by_value("IGD.LD1.WLAN3")
-        auth_type = self.driver.find_element(By.ID, "Frm_Authentication")
-        auth_type_value = auth_type.get_attribute("value")
-        if auth_type_value != "Open System":
-            password_present = EC.presence_of_element_located((By.ID, "Frm_KeyPassphrase"))
-            WebDriverWait(self.driver, 10).until(password_present)
-            password3_field = self.driver.find_element(By.ID, "Frm_KeyPassphrase")
-            password3_text = password3_field.get_attribute("value")
-        else:
-            password3_text = ""
-        # ssid4
-        ssid_select = driver.find_element(By.ID, 'Frm_SSID_SET')
-        ssid_dropdown = Select(ssid_select)
-        ssid_dropdown.select_by_value("IGD.LD1.WLAN4")
-        auth_type = self.driver.find_element(By.ID, "Frm_Authentication")
-        auth_type_value = auth_type.get_attribute("value")
-        if auth_type_value != "Open System":
-            password_present = EC.presence_of_element_located((By.ID, "Frm_KeyPassphrase"))
-            WebDriverWait(self.driver, 10).until(password_present)
-            password4_field = self.driver.find_element(By.ID, "Frm_KeyPassphrase")
-            password4_text = password4_field.get_attribute("value")
-        else:
-            password4_text = ""
+        for i in range(4):
+            wifi2ghz[f"ssid{i+1}Password"] = self.get_security("Frm_SSID_SET", f"IGD.LD1.WLAN{i+1}", "Frm_KeyPassphrase")
+        reordered_wifi2ghz = {
+            "ssid1Name": wifi2ghz["ssid1Name"],
+            "ssid1Password": wifi2ghz["ssid1Password"],
+            "ssid2Name": wifi2ghz["ssid2Name"],
+            "ssid2Password": wifi2ghz["ssid2Password"],
+            "ssid3Name": wifi2ghz["ssid3Name"],
+            "ssid3Password": wifi2ghz["ssid3Password"],
+            "ssid4Name": wifi2ghz["ssid4Name"],
+            "ssid4Password": wifi2ghz["ssid4Password"]
+        }
         data = {
             "ipRouter": self.ip_router,
             "routerName": self.router_name,
-            "wifi2ghz": {
-                "ssid1Name": ssid1_text,
-                "ssid1Password": password1_text,
-                "ssid2Name": ssid2_text,
-                "ssid1Password": password2_text,
-                "ssid3Name": ssid3_text,
-                "ssid3Password": password3_text,
-                "ssid4Name": ssid4_text,
-                "ssid4Password": password4_text,
-            },
+            "wifi2ghz": reordered_wifi2ghz,
             "wifi5ghz": "null",
         }
         return json.dumps(data, separators=(',', ':'))
@@ -252,7 +193,7 @@ class F609:
 chromedriver_autoinstaller.install()
 # Set up Chrome options
 chrome_options = Options()
-#chrome_options.add_argument("--headless")  # Run in headless mode (no GUI)
+chrome_options.add_argument("--headless")  # Run in headless mode (no GUI)
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 # Create a new instance of the Chrome driver
