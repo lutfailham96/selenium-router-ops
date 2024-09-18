@@ -124,7 +124,7 @@ class F609:
         ssid_input_value = ssid_input_field.get_attribute("value")
         return ssid_input_value
 
-    def get_security(self, ssid_option_id, ssid_dropdown_value, encryption_type_id):
+    def get_security(self, ssid_option_id, ssid_dropdown_value, encryption_type_id, passphrase_id):
         ssid_select = driver.find_element(By.ID, ssid_option_id)
         ssid_dropdown = Select(ssid_select)
         ssid_dropdown.select_by_value(ssid_dropdown_value)
@@ -132,9 +132,9 @@ class F609:
         encryption_type_value = encryption_type_option.get_attribute("value")
         passphrase_value = ""
         if encryption_type_value != "Open System":
-            password_present = EC.presence_of_element_located((By.ID, encryption_type_id))
-            WebDriverWait(self.driver, 10).until(password_present)
-            passphrase_field = self.driver.find_element(By.ID, encryption_type_id)
+            passphrase_present = EC.presence_of_element_located((By.ID, passphrase_id))
+            WebDriverWait(self.driver, 10).until(passphrase_present)
+            passphrase_field = self.driver.find_element(By.ID, passphrase_id)
             passphrase_value = passphrase_field.get_attribute("value")
         return passphrase_value
 
@@ -170,7 +170,7 @@ class F609:
         security_menu = self.driver.find_element(By.ID, "ssmWLANSec")
         security_menu.click()
         for i in range(4):
-            wifi2ghz[f"ssid{i+1}Password"] = self.get_security("Frm_SSID_SET", f"IGD.LD1.WLAN{i+1}", "Frm_KeyPassphrase")
+            wifi2ghz[f"ssid{i+1}Password"] = self.get_security("Frm_SSID_SET", f"IGD.LD1.WLAN{i+1}", "Frm_Authentication", "Frm_KeyPassphrase")
         reordered_wifi2ghz = {
             "ssid1Name": wifi2ghz["ssid1Name"],
             "ssid1Password": wifi2ghz["ssid1Password"],
