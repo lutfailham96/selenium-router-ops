@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import json
+from routers.common import wait_for_download_to_complete, rename_downloaded_file
 
 class F670L:
     def __init__(self, driver: WebDriver, router_ip: str, router_username: str, router_password: str) -> None:
@@ -81,3 +82,33 @@ class F670L:
 
     def reboot(self) -> None:
         pass
+
+    def download_user_config(self) -> None:
+        # router management menu
+        management_present = EC.presence_of_element_located((By.ID, "mgrAndDiag"))
+        WebDriverWait(self.driver, 10).until(management_present)
+        self.driver.find_element(By.ID, "mgrAndDiag").click()
+
+        # System management menu
+        smanagement_present = EC.presence_of_element_located((By.ID, "devMgr"))
+        WebDriverWait(self.driver, 10).until(smanagement_present)
+        self.driver.find_element(By.ID, "devMgr").click()
+
+        # User configuration management menu
+        umanagement_present = EC.presence_of_element_located((By.ID, "usrCfgMgr"))
+        WebDriverWait(self.driver, 10).until(umanagement_present)
+        self.driver.find_element(By.ID, "usrCfgMgr").click()
+
+        # Download user config
+        download_present = EC.presence_of_element_located((By.ID, "Btn_Download"))
+        WebDriverWait(self.driver, 10).until(download_present)
+        self.driver.find_element(By.ID, "Btn_Download").click()
+
+        # Rename config file
+        original_filename = "config.bin"
+        downloaded_file = wait_for_download_to_complete(original_filename)
+        if downloaded_file:
+            config_file = rename_downloaded_file(downloaded_file, f"{self.router_ip}-{self.router_name}-config.bin")
+            print(f"User configuration downloaded to: {config_file}")
+        else:
+            print("Download failed or file not found")
