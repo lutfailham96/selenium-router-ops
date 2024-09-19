@@ -26,3 +26,13 @@ def detect_router(driver: WebDriver, router_ip: str) -> str:
     if driver_title == "F609":
         return driver_title
     return driver_title
+
+def proceed_command(router: any, command: str) -> None:
+    if command == 'reboot':
+        router.get_homepage()
+        router.do_login()
+        router.reboot()
+    elif command == 'wifi_info':
+        router.get_homepage()
+        router.do_login()
+        print(router.get_wifi_info())
