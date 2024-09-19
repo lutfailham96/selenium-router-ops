@@ -9,7 +9,7 @@ def main() -> None:
     parser.add_argument('-u', '--username', required=True, help='Router username')
     parser.add_argument('-p', '--password', required=True, help='Router password')
     parser.add_argument('-ip', '--router_ip', required=True, help='Router IP address')
-    parser.add_argument('-c', '--command', required=True, choices=['reboot', 'wifi_info'], help='Command to execute')
+    parser.add_argument('-c', '--command', required=True, default='wifi_info', choices=['reboot', 'wifi_info'], help='Command to execute')
     parser.add_argument('-g', '--gui', required=False, default=False, help='Enable GUI webdriver')
     args = parser.parse_args()
 
