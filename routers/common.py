@@ -22,9 +22,9 @@ def detect_router(driver: WebDriver, router_ip: str) -> str:
     driver.get(f"http://{router_ip}/")
     driver_title = driver.title
     if driver_title == "F670L":
-        return driver_title
-    if driver_title == "F609":
-        return driver_title
+        return "F670L"
+    if driver_title == "F609" or driver_title == "ZXHN F609":
+        return "F609"
     return driver_title
 
 def proceed_command(router: any, command: str) -> None:
