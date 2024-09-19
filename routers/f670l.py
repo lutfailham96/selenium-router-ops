@@ -81,7 +81,24 @@ class F670L:
         return json.dumps(data, separators=(',', ':'))
 
     def reboot(self) -> None:
-        pass
+        # router management menu
+        management_present = EC.presence_of_element_located((By.ID, "mgrAndDiag"))
+        WebDriverWait(self.driver, 10).until(management_present)
+        self.driver.find_element(By.ID, "mgrAndDiag").click()
+
+        # System management menu
+        smanagement_present = EC.presence_of_element_located((By.ID, "devMgr"))
+        WebDriverWait(self.driver, 10).until(smanagement_present)
+        self.driver.find_element(By.ID, "devMgr").click()
+
+        # Reboot router
+        reboot_present = EC.presence_of_element_located((By.ID, "Btn_restart"))
+        WebDriverWait(self.driver, 10).until(reboot_present)
+        self.driver.find_element(By.ID, "Btn_restart").click()
+
+        confirm_present = EC.presence_of_element_located((By.ID, "confirmOK"))
+        WebDriverWait(self.driver, 10).until(confirm_present)
+        self.driver.find_element(By.ID, "confirmOK").click()
 
     def download_user_config(self) -> None:
         # router management menu
