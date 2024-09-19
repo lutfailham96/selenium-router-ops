@@ -56,6 +56,42 @@ class F609:
 
         return passphrase_value
 
+    def get_device_info(self) -> dict:
+        # Start page
+        self.driver.get(f"http://{self.router_ip}/start.ghtml")
+
+        # Switch to main frame
+        self.driver.switch_to.frame(1)
+
+        data = {}
+
+        # Table status
+        table_present = EC.presence_of_element_located((By.ID, "TABLE_DEV"))
+        WebDriverWait(self.driver, 10).until(table_present)
+        data["model"] = self.driver.find_element(By.ID, "Frm_ModelName").text
+        data["serial"] = self.driver.find_element(By.ID, "Frm_SerialNumber").text
+        data["hardwareVersion"] = self.driver.find_element(By.ID, "Frm_HardwareVer").text
+        data["softwareVersion"] = self.driver.find_element(By.ID, "Frm_SoftwareVer").text
+        data["bootLoaderVersion"] = self.driver.find_element(By.ID, "Frm_BootVer").text
+        data["ponSerial"] = self.driver.find_element(By.ID, "Frm_PonSerialNumber").text
+        data["batchNumber"] = self.driver.find_element(By.ID, "Frm_SoftwareVerExtent").text
+
+        ui_present = EC.presence_of_element_located((By.ID, "smLanStatu"))
+        WebDriverWait(self.driver, 10).until(ui_present)
+        self.driver.find_element(By.ID, "smLanStatu").click()
+
+        wlan_present = EC.presence_of_element_located((By.ID, "ssmWLAN"))
+        WebDriverWait(self.driver, 10).until(wlan_present)
+        self.driver.find_element(By.ID, "ssmWLAN").click()
+
+        table_present = EC.presence_of_element_located((By.ID, "tbl_basic_info"))
+        WebDriverWait(self.driver, 10).until(table_present)
+
+        for i in range(4):
+            data[f"macWlan{i+1}"] = self.driver.find_element(By.ID, f"td_Bssid{i}").text
+
+        return json.dumps(data, separators=(',', ':'))
+
     def get_wifi_info(self) -> dict:
         # Switch to main frame
         self.driver.switch_to.frame(1)

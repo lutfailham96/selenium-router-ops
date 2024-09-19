@@ -71,4 +71,8 @@ def proceed_command(router: any, command: str) -> None:
         router.get_homepage()
         router.do_login()
         router.download_user_config()
+    elif command == 'device_info':
+        router.get_homepage()
+        router.do_login()
+        print(router.get_device_info())
 
