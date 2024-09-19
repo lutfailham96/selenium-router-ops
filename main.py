@@ -9,7 +9,7 @@ def main() -> None:
     parser.add_argument('-u', '--username', required=True, help='Router username')
     parser.add_argument('-p', '--password', required=True, help='Router password')
     parser.add_argument('-ip', '--router_ip', required=True, help='Router IP address')
-    parser.add_argument('-c', '--command', required=True, default='wifi_info', choices=['reboot', 'wifi_info'], help='Command to execute')
+    parser.add_argument('-c', '--command', required=True, default='wifi_info', choices=['reboot', 'wifi_info', 'dl_config'], help='Command to execute')
     parser.add_argument('-g', '--gui', required=False, default=False, help='Enable GUI webdriver')
     args = parser.parse_args()
 
@@ -20,7 +20,7 @@ def main() -> None:
     enable_gui = args.gui
 
     # setup webdriver
-    driver = setup_webdriver(enable_gui)
+    driver = setup_webdriver(router_ip, enable_gui)
 
     router_name = detect_router(driver, router_ip)
     if router_name == "F670L":

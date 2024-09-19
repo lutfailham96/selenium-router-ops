@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 import json
+from routers.common import wait_for_download_to_complete, rename_downloaded_file
 
 class F609:
     def __init__(self, driver: WebDriver, router_ip: str, router_username: str, router_password: str) -> None:
@@ -128,3 +129,37 @@ class F609:
         confirm_present = EC.presence_of_element_located((By.ID, "msgconfirmb"))
         WebDriverWait(self.driver, 10).until(confirm_present)
         self.driver.find_element(By.ID, "msgconfirmb").click()
+
+    def download_user_config(self) -> None:
+        # Switch to main frame
+        self.driver.switch_to.frame(1)
+
+        # Router management menu
+        management_present = EC.presence_of_element_located((By.ID, "Fnt_mmManager"))
+        WebDriverWait(self.driver, 10).until(management_present)
+        self.driver.find_element(By.ID, "Fnt_mmManager").click()
+
+        # System management menu
+        smanagement_present = EC.presence_of_element_located((By.ID, "smSysMgr"))
+        WebDriverWait(self.driver, 10).until(smanagement_present)
+        self.driver.find_element(By.ID, "smSysMgr").click()
+
+
+        # User configuration management menu
+        smanagement_present = EC.presence_of_element_located((By.ID, "ssmConfMgr"))
+        WebDriverWait(self.driver, 10).until(smanagement_present)
+        self.driver.find_element(By.ID, "ssmConfMgr").click()
+
+        # Download user config
+        smanagement_present = EC.presence_of_element_located((By.ID, "download"))
+        WebDriverWait(self.driver, 10).until(smanagement_present)
+        self.driver.find_element(By.ID, "download").click()
+
+        # Rename config file
+        original_filename = "config.bin"
+        downloaded_file = wait_for_download_to_complete(original_filename)
+        if downloaded_file:
+            config_file = rename_downloaded_file(downloaded_file, f"{self.router_ip}-{self.router_name}-config.bin")
+            print(f"User configuration downloaded to: {config_file}")
+        else:
+            print("Download failed or file not found")
