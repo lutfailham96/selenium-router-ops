@@ -146,13 +146,13 @@ class F609:
 
 
         # User configuration management menu
-        smanagement_present = EC.presence_of_element_located((By.ID, "ssmConfMgr"))
-        WebDriverWait(self.driver, 10).until(smanagement_present)
+        umanagement_present = EC.presence_of_element_located((By.ID, "ssmConfMgr"))
+        WebDriverWait(self.driver, 10).until(umanagement_present)
         self.driver.find_element(By.ID, "ssmConfMgr").click()
 
         # Download user config
-        smanagement_present = EC.presence_of_element_located((By.ID, "download"))
-        WebDriverWait(self.driver, 10).until(smanagement_present)
+        download_present = EC.presence_of_element_located((By.ID, "download"))
+        WebDriverWait(self.driver, 10).until(download_present)
         self.driver.find_element(By.ID, "download").click()
 
         # Rename config file
