@@ -43,6 +43,42 @@ class F670L:
             "passphrase": passphrase_value,
         }
 
+    def get_device_info(self) -> dict:
+        # Management menu
+        manage_present = EC.presence_of_element_located((By.ID, "mgrAndDiag"))
+        WebDriverWait(self.driver, 10).until(manage_present)
+        self.driver.find_element(By.ID, "mgrAndDiag").click()
+
+        data = {}
+
+        # Table status
+        table_present = EC.presence_of_element_located((By.ID, "template_ManagStatus"))
+        WebDriverWait(self.driver, 10).until(table_present)
+        data["ipRouter"] = self.router_ip
+        data["model"] = self.driver.find_element(By.ID, "ModelName").text
+        data["serial"] = self.driver.find_element(By.ID, "SerialNumber").text
+        data["hardwareVersion"] = self.driver.find_element(By.ID, "HardwareVer").text
+        data["softwareVersion"] = self.driver.find_element(By.ID, "SoftwareVer").text
+        data["bootLoaderVersion"] = self.driver.find_element(By.ID, "BootVer").text
+        data["ponSerial"] = "null"
+        data["batchNumber"] = self.driver.find_element(By.ID, "SoftwareVerExtent").text
+
+        localnet_present = EC.presence_of_element_located((By.ID, "localnet"))
+        WebDriverWait(self.driver, 10).until(localnet_present)
+        self.driver.find_element(By.ID, "localnet").click()
+
+        wlan_present = EC.presence_of_element_located((By.ID, "WLANStatusBar"))
+        WebDriverWait(self.driver, 10).until(wlan_present)
+        self.driver.find_element(By.ID, "WLANStatusBar").click()
+
+        table_present = EC.presence_of_element_located((By.ID, "WLANStatus_container"))
+        WebDriverWait(self.driver, 10).until(table_present)
+
+        for i in range(8):
+            data[f"macWlan{i+1}"] = self.driver.find_element(By.ID, f"Bssid:{i}").text
+
+        return json.dumps(data, separators=(',', ':'))
+
     def get_wifi_info(self) -> dict:
         # Click localnet menu
         localnet_present = EC.presence_of_element_located((By.ID, "localnet"))

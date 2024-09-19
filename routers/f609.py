@@ -68,6 +68,7 @@ class F609:
         # Table status
         table_present = EC.presence_of_element_located((By.ID, "TABLE_DEV"))
         WebDriverWait(self.driver, 10).until(table_present)
+        data["ipRouter"] = self.router_ip
         data["model"] = self.driver.find_element(By.ID, "Frm_ModelName").text
         data["serial"] = self.driver.find_element(By.ID, "Frm_SerialNumber").text
         data["hardwareVersion"] = self.driver.find_element(By.ID, "Frm_HardwareVer").text
